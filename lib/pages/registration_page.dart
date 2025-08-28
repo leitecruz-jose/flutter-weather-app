@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/pages/login_page.dart';
+import 'package:weather_app/services/user_service.dart';
 import '../services/auth_service.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
+  final _userService = UserService();
 
   bool _isLoading = false;
 
@@ -25,7 +26,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
     setState(() => _isLoading = true);
 
-    final success = await _authService.registerUser(
+    final success = await _userService.registerUser(
       _usernameController.text,
       _passwordController.text,
     );
