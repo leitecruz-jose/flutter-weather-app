@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/pages/login_page.dart';
 import 'package:weather_app/services/user_service.dart';
-import '../services/auth_service.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});

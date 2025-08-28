@@ -1,13 +1,13 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:weather_app/models/user_model.dart';
-import 'dart:convert';
 
 import 'package:weather_app/services/user_service.dart';
 
 class AuthService {
   //in this app, that doesn't have a backend, we store the secret out here in the open
   static const String JWT_SECRET = 'my-not-that-secret-jwt-secret';
+  final _storage = const FlutterSecureStorage();
 
   Future<bool> login(String username, String password) async {
     final userService = UserService();
@@ -26,7 +26,6 @@ class AuthService {
   }
 
   Future<void> _generateAndStoreJwtToken(String username) async {
-    final prefs = await SharedPreferences.getInstance();
 
     final payload = {
       'username': username,
@@ -38,17 +37,15 @@ class AuthService {
     final jwt = JWT(payload);
     final jwtToken = jwt.sign(SecretKey(JWT_SECRET));
 
-    await prefs.setString('jwt_token', jwtToken);
+    await _storage.write(key: 'jwt_token', value: jwtToken);
   }
 
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('jwt_token');
+  Future<void> deleteToken() async {
+    await _storage.delete(key: 'jwt_token');
   }
 
   Future<bool> checkIfTokenIsValid() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('jwt_token');
+    final token = await _storage.read(key: 'jwt_token');
 
     if (token == null || token.isEmpty) {
       return false;
@@ -62,13 +59,13 @@ class AuthService {
       JWT.verify(token, SecretKey(JWT_SECRET));
       return true;
     } on JWTExpiredException {
-      await logout();
+      await deleteToken();
       return false;
     } on JWTException {
-      await logout();
+      await deleteToken();
       return false;
     } catch (e) {
-      await logout();
+      await deleteToken();
       return false;
     }
   }

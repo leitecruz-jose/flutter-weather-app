@@ -39,7 +39,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
   void _logout(BuildContext context) async {
     final authService = AuthService();
-    await authService.logout();
+    await authService.deleteToken();
 
     if (context.mounted) {
       Navigator.of(context).pushAndRemoveUntil(

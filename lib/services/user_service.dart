@@ -7,10 +7,10 @@ class UserService {
   factory UserService() {
     return _instance;
   }
-  
+
   static final UserService _instance = UserService._internal();
   UserService._internal();
-  
+
   final List _users = [];
 
   void addUser(User user) {
